@@ -15,8 +15,20 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^rango/', include('rango.urls')),
+    url(r'^rango/', include('rango.urls', namespace='rango')),
 ]
+
+if settings.DEBUG: [
+    'django.views.static',
+    (r'^media/(?P<path>.*)',
+    'serve',
+    {'document_root': settings.MEDIA_ROOT}),
+]
+
+if not settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
